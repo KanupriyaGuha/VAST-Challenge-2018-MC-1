@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Interactive Charts</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div style="text-align: center;">
+    <h1>Compare Interactive Charts</h1>
+    <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+      <div id="doughnutChart1" style="width: 400px;"></div>
+      <div id="doughnutChart2" style="width: 400px;"></div>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+      <div id="scatterChart1" style="width: 400px;"></div>
+      <div id="scatterChart2" style="width: 400px;"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const doughnutData1 = [
+        { x: 1991, y: 1 },
+        { x: 1993, y: 1 },
+        { x: 1994, y: 1 },
+        { x: 1995, y: 2 },
+        { x: 1996, y: 1 },
+        { x: 1997, y: 2 },
+        { x: 1999, y: 1 },
+        { x: 2001, y: 3 },
+        { x: 2002, y: 1 },
+        { x: 2003, y: 4 },
+        { x: 2004, y: 2 },
+        { x: 2005, y: 0 },
+        { x: 2006, y: 4 },
+        { x: 2007, y: 6 },
+        { x: 2008, y: 4 },
+        { x: 2009, y: 10 },
+        { x: 2010, y: 11 },
+        { x: 2011, y: 16 },
+        { x: 2012, y: 9 },
+        { x: 2013, y: 16 },
+        { x: 2014, y: 29 },
+        { x: 2015, y: 23 },
+        { x: 2016, y: 15 },
+        { x: 2017, y: 13 }
+      ];
+
+      const doughnutData2 = [
+        { x: 1983, y: 1 },
+        { x: 1986, y: 2 },
+        { x: 1988, y: 1 },
+        { x: 1989, y: 2 },
+        { x: 1990, y: 3 },
+        { x: 1991, y: 6 },
+        { x: 1992, y: 6 },
+        { x: 1993, y: 4 },
+        { x: 1994, y: 2 },
+        { x: 1995, y: 11 },
+        { x: 1996, y: 4 },
+        { x: 1997, y: 4 },
+        { x: 1998, y: 8 },
+        { x: 1999, y: 9 },
+        { x: 2000, y: 9 }
+      ];
+
+      createDoughnutChart('#doughnutChart1', doughnutData1, 'Rose Crested Blue Pipits');
+      createDoughnutChart('#doughnutChart2', doughnutData2, 'Bent Beak Riffaff');
+
+      const scatterData1 = [
+        { x: 1991, y: 1 },
+        { x: 1993, y: 1 },
+        { x: 1994, y: 1 },
+        { x: 1995, y: 2 },
+        { x: 1996, y: 1 },
+        { x: 1997, y: 2 },
+        { x: 1999, y: 1 },
+        { x: 2001, y: 3 },
+        { x: 2002, y: 1 },
+        { x: 2003, y: 4 },
+        { x: 2004, y: 2 },
+        { x: 2005, y: 0 },
+        { x: 2006, y: 4 },
+        { x: 2007, y: 6 },
+        { x: 2008, y: 4 },
+        { x: 2009, y: 10 },
+        { x: 2010, y: 11 },
+        { x: 2011, y: 16 },
+        { x: 2012, y: 9 },
+        { x: 2013, y: 16 },
+        { x: 2014, y: 29 },
+        { x: 2015, y: 23 },
+        { x: 2016, y: 15 },
+        { x: 2017, y: 13 }
+      ];
+
+      const scatterData2 = [
+        { x: 1983, y: 1 },
+        { x: 1986, y: 2 },
+        { x: 1988, y: 1 },
+        { x: 1989, y: 2 },
+        { x: 1990, y: 3 },
+        { x: 1991, y: 6 },
+        { x: 1992, y: 6 },
+        { x: 1993, y: 4 },
+        { x: 1994, y: 2 },
+        { x: 1995, y: 11 },
+        { x: 1996, y: 4 },
+        { x: 1997, y: 4 },
+        { x: 1998, y: 8 },
+        { x: 1999, y: 9 },
+        { x: 2000, y: 9 }
+      ];
+
+      createScatterPlot('#scatterChart1', scatterData1, 'Rose Crested Blue Pipits');
+      createScatterPlot('#scatterChart2', scatterData2, 'Bent Beak Riffaff');
+
+      function createDoughnutChart(container, data, title) {
+        const width = 400;
+        const height = 300;
+        const radius = Math.min(width, height) / 2;
+
+        const color = d3.scaleOrdinal()
+          .domain(data.map(d => d.year || d.x))
+          .range(d3.schemeCategory10);
+
+        const pie = d3.pie().value(d => d.value || d.y);
+
+        const arc = d3.arc()
+          .outerRadius(radius - 10)
+          .innerRadius(radius - 70);
+
+        const svg = d3.select(container)
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        const path = svg.selectAll("path")
+          .data(pie(data))
+          .enter().append("path")
+          .attr("d", arc)
+          .attr("fill", d => color(d.data.year || d.data.x))
+          .on("mouseover", handleMouseOver)
+          .on("mouseout", handleMouseOut);
+
+        svg.append("text")
+          .attr("text-anchor", "middle")
+          .attr("dy", "-1em")
+          .text(title);
+
+        // Add a legend
+        const legend = svg.selectAll(".legend")
+          .data(color.domain())
+          .enter().append("g")
+          .attr("class", "legend")
+          .attr("transform", (d, i) => "translate(0," + i * 20 + ")");
+
+        legend.append("rect")
+          .attr("x", 20)
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", color);
+
+        legend.append("text")
+          .attr("x", 45)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "start")
+          .text(d => d);
+
+        // Tooltip functions
+        function handleMouseOver(d) {
+          d3.select(this)
+            .attr("fill", "orange");
+        }
+
+        function handleMouseOut() {
+          d3.select(this)
+            .attr("fill", d => color(d.data.year || d.data.x));
+        }
+      }
+
+      function createScatterPlot(container, data, title) {
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 400 - margin.left - margin.right;
+        const height = 300 - margin.top - margin.bottom;
+
+        const x = d3.scaleLinear()
+          .domain(d3.extent(data, d => d.x))
+          .range([0, width]);
+
+        const y = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d.y)])
+          .range([height, 0]);
+
+        const svg = d3.select(container)
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        svg.append("text")
+          .attr("x", width / 2)
+          .attr("y", -margin.top / 2)
+          .attr("text-anchor", "middle")
+          .text(title);
+
+        svg.selectAll("circle")
+          .data(data)
+          .enter().append("circle")
+          .attr("cx", d => x(d.x))
+          .attr("cy", d => y(d.y))
+          .attr("r", 5)
+          .attr("fill", "steelblue")
+          .on("mouseover", handleMouseOver)
+          .on("mouseout", handleMouseOut);
+
+        // Add x-axis
+        svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+        // Add y-axis
+        svg.append("g")
+          .call(d3.axisLeft(y));
+
+        // Tooltip functions
+        function handleMouseOver(d) {
+          d3.select(this)
+            .attr("fill", "orange");
+        }
+
+        function handleMouseOut() {
+          d3.select(this)
+            .attr("fill", "steelblue");
+        }
+      }
+    });
+  </script>
+</body>
+</html>

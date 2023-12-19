@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combined Charts</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div style="text-align: center;">
+    <h1>COUNT OF ROSE CRESTED BLUE PIPITS YEAR WISE</h1>
+    <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+      <div style="width: 400px;">
+        <h2>Scatter Plot</h2>
+        <canvas id="scatterChart" width="400" height="300"></canvas>
+      </div>
+      <div style="width: 400px;">
+        <h2>Radar Chart</h2>
+        <canvas id="radarChart" width="400" height="300"></canvas>
+      </div>
+      <div style="width: 400px;">
+        <h2>Doughnut Chart</h2>
+        <canvas id="doughnutChart" width="400" height="300"></canvas>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+      <div style="width: 400px;">
+        <h2>Line Chart</h2>
+        <canvas id="lineChart" width="400" height="300"></canvas>
+      </div>
+      <div style="width: 400px;">
+        <h2>Polar Area Chart</h2>
+        <canvas id="polarAreaChart" width="400" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sample data for all charts
+      const data = [
+        { x: 1991, y: 1 },
+        { x: 1993, y: 1 },
+        { x: 1994, y: 1 },
+        { x: 1995, y: 2 },
+        { x: 1996, y: 1 },
+        { x: 1997, y: 2 },
+        { x: 1999, y: 1 },
+        { x: 2001, y: 3 },
+        { x: 2002, y: 1 },
+        { x: 2003, y: 4 },
+        { x: 2004, y: 2 },
+        { x: 2005, y: 0 },
+        { x: 2006, y: 4 },
+        { x: 2007, y: 6 },
+        { x: 2008, y: 4 },
+        { x: 2009, y: 10 },
+        { x: 2010, y: 11 },
+        { x: 2011, y: 16 },
+        { x: 2012, y: 9 },
+        { x: 2013, y: 16 },
+        { x: 2014, y: 29 },
+        { x: 2015, y: 23 },
+        { x: 2016, y: 15 },
+        { x: 2017, y: 13 }
+      ];
+
+      // Extracting data for the scatter plot
+      const scatterLabels = data.map(entry => entry.x.toString());
+      const scatterValues = data.map(entry => entry.y);
+
+      // Scatter Plot
+      const scatterCtx = document.getElementById('scatterChart').getContext('2d');
+      new Chart(scatterCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Count of Pipits',
+            data: data,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              ticks: {
+                callback: function(value) {
+                  return value.toFixed(0);
+                }
+              }
+            },
+            y: {
+              type: 'linear',
+              position: 'left'
+            }
+          }
+        }
+      });
+
+      // Extracting data for the radar chart
+      const radarLabels = data.map(entry => entry.x.toString());
+      const radarValues = data.map(entry => entry.y);
+
+      // Radar Chart
+      const radarCtx = document.getElementById('radarChart').getContext('2d');
+      new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+          labels: radarLabels,
+          datasets: [{
+            label: 'Count of Pipits',
+            data: radarValues,
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scale: {
+            ticks: { beginAtZero: true }
+          }
+        }
+      });
+
+      // Extracting data for the doughnut chart
+      const doughnutLabels = ['1991-1999', '2001-2009', '2011-2017'];
+      const doughnutValues = [
+        data.slice(0, 8).reduce((acc, curr) => acc + curr.y, 0),
+        data.slice(8, 18).reduce((acc, curr) => acc + curr.y, 0),
+        data.slice(18).reduce((acc, curr) => acc + curr.y, 0)
+      ];
+
+      // Doughnut Chart
+      const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+      new Chart(doughnutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: doughnutLabels,
+          datasets: [{
+            data: doughnutValues,
+            backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)'],
+            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)'],
+            borderWidth: 1
+          }]
+        }
+      });
+
+      // Extracting data for the line chart
+      const lineLabels = data.map(entry => entry.x.toString());
+      const lineValues = data.map(entry => entry.y);
+
+      // Line Chart
+      const lineCtx = document.getElementById('lineChart').getContext('2d');
+      new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: lineLabels,
+          datasets: [{
+            label: 'Count of Pipits',
+            data: lineValues,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              ticks: {
+                callback: function(value) {
+                  return value.toFixed(0);
+                }
+              }
+            },
+            y: {
+              type: 'linear',
+              position: 'left'
+            }
+          }
+        }
+      });
+
+      // Extracting data for the polar area chart
+      const polarAreaLabels = data.map(entry => entry.x.toString());
+      const polarAreaValues = data.map(entry => entry.y);
+
+      // Polar Area Chart
+      const polarAreaCtx = document.getElementById('polarAreaChart').getContext('2d');
+      new Chart(polarAreaCtx, {
+        type: 'polarArea',
+        data: {
+          labels: polarAreaLabels,
+          datasets: [{
+            label: 'Count of Pipits',
+            data: polarAreaValues,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+              'rgba(153, 102, 255, 0.5)',
+              'rgba(255, 159, 64, 0.5)',
+              'rgba(255, 0, 0, 0.5)',
+              'rgba(0, 128, 0, 0.5)',
+              'rgba(0, 0, 255, 0.5)',
+              'rgba(128, 0, 128, 0.5)',
+              'rgba(128, 128, 0, 0.5)',
+              'rgba(255, 255, 0, 0.5)',
+              'rgba(255, 0, 255, 0.5)',
+              'rgba(0, 255, 255, 0.5)',
+              'rgba(192, 192, 192, 0.5)',
+              'rgba(128, 128, 128, 0.5)',
+              'rgba(0, 0, 0, 0.5)',
+              'rgba(255, 140, 0, 0.5)',
+              'rgba(0, 255, 0, 0.5)',
+              'rgba(255, 0, 0, 0.5)',
+              'rgba(0, 0, 255, 0.5)',
+              'rgba(255, 255, 0, 0.5)',
+              'rgba(255, 0, 255, 0.5)',
+              'rgba(0, 255, 255, 0.5)',
+              'rgba(192, 192, 192, 0.5)',
+              'rgba(128, 128, 128, 0.5)',
+              'rgba(0, 0, 0, 0.5)'
+            ],
+            borderWidth: 1
+          }]
+        }
+      });
+    });
+  </script>
+</body>
+</html>
